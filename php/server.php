@@ -12,7 +12,7 @@ public function __construct() {
     $this->point = 0;
 
 }
-public function createColoda() {
+public function createColoda() {                   //   функция создания колоды карт/ перебираем карты из cards и комбинируем с мастью valueofcard
     foreach($this->cards as $key) {
         foreach($this->valueofcard as $value) {
         $cardstring = $key.$value;
@@ -20,12 +20,12 @@ public function createColoda() {
         }
     }
 }
-private function getCard() {
+private function getCard() {                          // получаем рандомную карту из колоды
     $this->usercard = $this->coloda[rand(0, 35)];
     return $this->usercard;
 }
-private function getPoint() {
-    
+private function getPoint() {                    // функция присваивания очков карте
+     
     if($this->usercard[0] == '6') {
         $this->point = 6;
     }
@@ -56,7 +56,7 @@ private function getPoint() {
     return $this->point;
 }
 
-private function cardIMG() {
+private function cardIMG() {                              // функция создания пути до изображения карты в папке проекта
     $playercard = $this->getCard();
     $suit = '';
     $suit = substr($playercard, 1);
@@ -64,29 +64,29 @@ private function cardIMG() {
     return $imgdir;
 }
 
-public function userMove() {
- 
+public function userMove() {                                       // ФУНКЦИЯ ХОДА ИГРОКА
+                                                                   // берем случайную карту
     $this->getCard();
-    $usercard = $this-> cardIMG();
+    $usercard = $this-> cardIMG();                                  // находим путь до ее изображения в папке
     $point = $this->getPoint();
-    $user_card_arr = [];
-    $scorepost = json_decode($_POST['getscore']);
+    $user_card_arr = [];                                           //создаем массив значений
+    $scorepost = json_decode($_POST['getscore']);                   // получаем предыдущий счет игрока из первой части json массива
     $score = $scorepost[0];
-    (int)$score += (int)$point;
+    (int)$score += (int)$point;                                    // добавляем к предыдущему счету текущие очки
     $cardstring = '<img src="'.$usercard.'" id="cardimg">';
     $scorestring = 'Очки: '.$score.'<br>';
     $user_card_arr['score'] = $score;
     $user_card_arr['cardstring'] = $cardstring;
     $user_card_arr['scorestring'] = $scorestring;
-    return $user_card_arr;
+    return $user_card_arr;                                         // возвращаем массив значений очки/путьдоизображения/строка с очками
     }
-    public function compMove() {
+    public function compMove() {                                  // ФУНКЦИЯ ХОДА КОМПЬЮТЕРА 
         
-        $comp_card_name = $this->getCard();
-        $compcard = 'img/rubashka/rubashka.jpg';
-        $point = $this->getPoint();
-        $card_arr = [];
-        $scorepost = json_decode($_POST['getscore']);
+        $comp_card_name = $this->getCard();                       // получаем случайную карту
+        $compcard = 'img/rubashka/rubashka.jpg';                  // получаем изображение рубашки карты
+        $point = $this->getPoint();                               // получаем текущие очки
+        $card_arr = [];                                           // создаем пустой массив, куда будем класть значения
+        $scorepost = json_decode($_POST['getscore']);             // принимаем json массив с очками и берем вторую его часть
         $score = $scorepost[1];
         $cardstring = '<img src="'.$compcard.'" id="rubashka">';
         $scorestring = 'Очки: '.$score.'<br>';
@@ -94,15 +94,16 @@ public function userMove() {
         $comp_card_arr['score'] = $score;
         $comp_card_arr['cardstring'] = $cardstring;
         $comp_card_arr['scorestring'] = $scorestring;
-        $comp_card_arr['compcard'] = $compcard;
-        $comp_card_arr['stop'] = false;
+        $comp_card_arr['compcard'] = $compcard;               // массив по аналогии с предыдущим, но добавлены 2 ячейки. compcard - карта компа
+        $comp_card_arr['stop'] = false;                       // данная строка при false - продолжение игры, при true - комп останавилвиается
                
-        if ($score >= 21) {
+                                                              // ЛОГИКА ИИ 
+        if ($score >= 21) {                                   // если очки больше либо равны 21 - стоп               
             $comp_card_arr['stop'] = true;
             return $comp_card_arr;
             error_log('Comp stopes score >=21 . Score = '.$score);
         }
-        if ($score >= 17 && $score < 21) {
+        if ($score >= 17 && $score < 21) {                    // если очки больше, либо равны 17 и меньше 21 стоп с 50% вероятностью
             
          if (rand(0, 1) == 0){
               $comp_card_arr['stop'] = true;
@@ -114,14 +115,14 @@ public function userMove() {
          return $comp_card_arr;
         }
         
-        if ($score < 17) {
+        if ($score < 17) {                                       // если очки меньше 17 продолжаем игру
         (int)$score += (int)$point;
         $comp_card_arr['score'] = $score;
         return $comp_card_arr;
         error_log('Comp continue score  < 17. Score = '.$score);
         }
     }
-    public function compareScore() {
+    public function compareScore() {                              // ФУНКЦИЯ ПОДСЧЕТА ОЧКОВ
         $arr = json_decode($_POST['finish']);
         
         $user_score = $arr[0];
@@ -154,7 +155,7 @@ public function userMove() {
 $playgame = new playGame();
 $playgame->createColoda();
 
-if (isset($_POST['getscore'])) {
+if (isset($_POST['getscore'])) { // вызываем ход игрока, затем ход компьютера, возвращаем json-массив со значениями
 
 $user_move = $playgame->userMove();
 $comp_move = $playgame->compMove();
@@ -162,7 +163,7 @@ $move_arr = [$user_move, $comp_move];
 echo json_encode($move_arr);
 }
 
-if (isset($_POST['finish'])) {
+if (isset($_POST['finish'])) { // при нажатии кнопки "стоп" подведением итогов
 $playgame->compareScore();
     }
 
