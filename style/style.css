@@ -1,0 +1,83 @@
+#userplay {
+    display:inline-block;
+    width: 45%;
+    float: left;
+    
+}
+
+#compplay {
+    display: inline-block;
+    width: 45%;
+    float:right;
+    
+}
+
+#gameplay {
+    height: 60%;
+    overflow-y: auto;
+    width: 100%;
+}
+#buttons {
+    width:100%;
+    justify-content: center;
+}
+#user_score_checker {
+    visibility: hidden;
+}
+#comp_score_checker {
+    visibility: hidden;
+}
+#cardimg {
+    width:17%;
+    height:22%;
+}
+
+#rubashka {
+    width:17%;
+    height:23%;
+}
+#getcardjs {
+    margin-top:10%;
+    margin-left:20%;
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    background: #0B63F6;
+    box-shadow: 0 5px 0 #003CC5;
+    width: 30%;
+    height: 10%;
+    font-size: 120%;
+    display: inline-block;
+}
+#getcardjs:hover {
+    height: 9%;
+ }
+#getcardjs:active {
+    background: #003CC5;
+    box-shadow: none;
+    position: relative;
+    top: 5px;
+}
+
+#finishjs {
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    background: #0B63F6;
+    box-shadow: 0 5px 0 #003CC5;
+    width: 30%;
+    height: 10%;
+    font-size: 120%;
+    display:inline-block;
+}
+#finishjs:hover {
+    height: 9%;
+ }
+#finishjs:active {
+    background: #003CC5;
+    box-shadow: none;
+    position: relative;
+    top: 5px;
+}
