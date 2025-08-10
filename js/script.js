@@ -1,10 +1,12 @@
-
+$( document ).ready(function() {
+	$('#finaljs').hide();
+})
 
 $('#getcardjs').click(() => {
     let score_user = Number($('#user_score_checker').text()); //   копируем значение скрытой переменной юзера
-	let score_comp = Number($('#comp_score_checker').text()); //   копируем значение скрытой переменной компа
+	let sumofcard_user = Number($('#user_sumofcard_checker').text()); // количество карт 
 	let scorearr = [];
-	scorearr.push(score_user, score_comp); // добавляем их в массив
+	scorearr.push(score_user, sumofcard_user); // добавляем их в массив
     $.ajax({
 		type: 'post',
 		url: 'php/server.php',
@@ -12,22 +14,19 @@ $('#getcardjs').click(() => {
 		success: function(data){
 			alert(data);
 			let answer = JSON.parse(data); // парсим результат
-			
+		
 			$('#user_score_checker').text('');
             $('#user_score_checker').append(Number(answer[0]['score'])); // стираем предыдушее значение очков юзера, обновляем на новое
+
 			$('#user_card_space').append(answer[0]['cardstring'] + ' '); // вставляем в блок путь к изображению карты
+
 			$('#user_score_space').text('');
-			$('#user_score_space').append(answer[0]['scorestring'] + '<br>'); // добавляем юзеру строку с очками
-            if (answer[1]['stop'] !== true) { // если в json массива строка 'stop' == false -> комп делает ход
-			$('#comp_score_checker').text('');
-            $('#comp_score_checker').append(Number(answer[1]['score'])); // стираем предыдушее значение очков компа, обновляем на новое
-			$('#comp_card_space').append(answer[1]['cardstring'] + ' '); // добавляем путь к изображению из массива
-			$('#comp_finish_checker').text(''); // обнуляем финиш чекер ( который отвечает за остановк)
-			} else {    // если 'stop' = true, то компьютер прекращает набирать карты
-				alert(score_comp);
-				$('#comp_finish_checker').text('Противник остановился'); // обновляем финиш-чекер
-				
-			    }
+			$('#user_score_space').append(answer[0]['scorestring'] + '<br>');// добавляем юзеру строку с очками
+
+			$('#user_sumofcard_checker').text('');
+			$('#user_sumofcard_checker').append(answer[0]['sumofcard']); /// добавляем в счетчик количество взятых карт
+
+            
 			}
 			
 })
@@ -35,24 +34,66 @@ $('#getcardjs').click(() => {
 
 
 $('#finishjs').click(() => {
-	let score_user = Number($('#user_score_checker').text()); // копируем значение скрытой переменной юзера
-	let score_comp = Number($('#comp_score_checker').text()); // копируем значение скрытой переменной компа
+	let score_user = Number($('#user_score_checker').text()); //   копируем значение скрытой переменной юзера
+	let sumofcard_user = Number($('#user_sumofcard_checker').text()); // количество карт 
 	let scorearr = [];
-	scorearr.push(score_user, score_comp); // добавляем их в массив
+	scorearr.push(score_user, sumofcard_user); // добавляем их в массив
 	$.ajax({
 		type: 'post',
 		url: 'php/server.php',
 		data: { finish: JSON.stringify(scorearr)}, // отправляем массив с очками серверу, чтобы он их сравнил
 		success: function(data) {
-			alert(data);                           // получаем ответ и
-			$('#user_score_checker').text('');
+			alert(data);       
+			let answer = JSON.parse(data);
+			
 			$('#comp_score_checker').text('');
+            $('#comp_score_checker').append(Number(answer['score'])); // стираем предыдушее значение очков компа, обновляем на новое
+
+            $('#comp_card_space').append(answer['cardstring'] + ' '); // добавляем путь к изображению из массива
+
+            $('#comp_sumofcard_checker').text(''); 
+            $('#comp_sumofcard_checker').append(answer['sumofcard']); /// добавляем в счетчик количество взятых карт
+    
+            $('#comp_finish_checker').text(''); // обнуляем финиш чекер ( который отвечает за остановку)
+    
+    
+            $('#comp_finish_checker').text('Противник готов'); // обновляем финиш-чекер
+			$('#finishjs').hide(); // скрываем кнопки первой части игры: взять карту и стоп
+			$('#getcardjs').hide();
+			$('#finaljs').show(); // показываем скрытую кнопку вскрывания
+
+}
+	})
+})
+$('#finaljs').click(() => {
+            let choice = confirm('Готовы раскрыться?');
+			if (choice) {
+				let score_user = Number($('#user_score_checker').text());
+			let score_comp = Number($('#comp_score_checker').text()); //   копируем значение скрытой переменной юзера
+			let scorearr = [];
+	        scorearr.push(score_user,score_comp);
+			
+				$.ajax({
+					type: 'post',
+					url: 'php/server.php',
+					data: { final: JSON.stringify(scorearr)}, // отправляем массив с очками серверу, чтобы он их сравнил
+					success: function(data) { 
+			alert(data);
+			$('#user_score_checker').text('');
 			$('#user_score_space').text('');
 			$('#comp_score_space').text('');
 			$('#user_card_space').text('');
 			$('#comp_card_space').text('');
+			$('#user_sumofcard_checker').text('');  
 			$('#comp_finish_checker').text(''); //  обнуляем все показатели для новой игры
-		}
-	})
+
+			$('#finishjs').show(); // открываем кнопки первой части игры: взять карту и стоп / скрываем кнопку раскрыться
+			$('#getcardjs').show();
+			$('#finaljs').hide();
+		    }
+		})
+	}
 })
+
+	
 

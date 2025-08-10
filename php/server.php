@@ -72,58 +72,100 @@ public function userMove() {                                       // ФУНКЦ
     $user_card_arr = [];                                           //создаем массив значений
     $scorepost = json_decode($_POST['getscore']);                   // получаем предыдущий счет игрока из первой части json массива
     $score = $scorepost[0];
-    (int)$score += (int)$point;                                    // добавляем к предыдущему счету текущие очки
+    (int)$score += (int)$point;                                      // добавляем к предыдущему счету текущие очки
+    $sumofcard = $scorepost[1]; 
+    $sumofcard++;                                                  // добавляем 1 к сумме взятых карт
     $cardstring = '<img src="'.$usercard.'" id="cardimg">';
     $scorestring = 'Очки: '.$score.'<br>';
     $user_card_arr['score'] = $score;
     $user_card_arr['cardstring'] = $cardstring;
     $user_card_arr['scorestring'] = $scorestring;
+    $user_card_arr['sumofcard'] = $sumofcard; 
     return $user_card_arr;                                         // возвращаем массив значений очки/путьдоизображения/строка с очками
     }
-    public function compMove() {                                  // ФУНКЦИЯ ХОДА КОМПЬЮТЕРА 
+    
+    public function compMove($score, $sumofcard, $card_arr_string = '') {                                  // ФУНКЦИЯ ХОДА КОМПЬЮТЕРА 
         
         $comp_card_name = $this->getCard();                       // получаем случайную карту
-        $compcard = 'img/rubashka/rubashka.jpg';                  // получаем изображение рубашки карты
+        $compcard = $this-> cardIMG();                            // получаем изображение карты                
         $point = $this->getPoint();                               // получаем текущие очки
-        $card_arr = [];                                           // создаем пустой массив, куда будем класть значения
-        $scorepost = json_decode($_POST['getscore']);             // принимаем json массив с очками и берем вторую его часть
-        $score = $scorepost[1];
+        $comp_card_arr = [];                                           // создаем пустой массив, куда будем класть значения
+        
+        
         $cardstring = '<img src="'.$compcard.'" id="rubashka">';
         $scorestring = 'Очки: '.$score.'<br>';
+        
+        $comp_card_arr['score'] = 0;
+        
+                
+        $comp_card_arr['score'] += (int)$score;
 
-        $comp_card_arr['score'] = $score;
-        $comp_card_arr['cardstring'] = $cardstring;
-        $comp_card_arr['scorestring'] = $scorestring;
-        $comp_card_arr['compcard'] = $compcard;               // массив по аналогии с предыдущим, но добавлены 2 ячейки. compcard - карта компа
+        $comp_card_arr['cardstring'] = $card_arr_string;
+        if($comp_card_arr['cardstring'] == '') {
+            $comp_card_arr['cardstring'] = $cardstring;
+        } else {
+
+            $new_string = $comp_card_arr['cardstring'];
+            $comp_card_arr['cardstring'] = $new_string.$cardstring;
+        }
+
+        $comp_card_arr['scorestring'] = $scorestring; 
+        $comp_card_arr['sumofcard'] = $sumofcard;               // массив по аналогии с предыдущим, но добавлены 2 ячейки. compcard - карта компа
         $comp_card_arr['stop'] = false;                       // данная строка при false - продолжение игры, при true - комп останавилвиается
-               
+            
                                                               // ЛОГИКА ИИ 
         if ($score >= 21) {                                   // если очки больше либо равны 21 - стоп               
             $comp_card_arr['stop'] = true;
             return $comp_card_arr;
-            error_log('Comp stopes score >=21 . Score = '.$score);
+            
         }
         if ($score >= 17 && $score < 21) {                    // если очки больше, либо равны 17 и меньше 21 стоп с 50% вероятностью
             
          if (rand(0, 1) == 0){
               $comp_card_arr['stop'] = true;
-         } else {  $comp_card_arr['stop'] = false;
-             (int)$score += (int)$point;
+              return $comp_card_arr;
+         } else {  
+            $comp_card_arr['stop'] = false;
+            $sumofcard++;                                        // добавляем 1 к сумме взятых карт
+            $comp_card_arr['sumofcard'] = $sumofcard; 
+             (int)$score += (int)$point;                         // добавляем очки записываем в массив
              $comp_card_arr['score'] = $score;
+             return $comp_card_arr;
          }
-         error_log('Comp 50/50 decision: ').$comp_card_arr['stop'] = true ? error_log('STOP. ') : error_log('CONTINUE. ').' Score = '.$score;
-         return $comp_card_arr;
+         
+         
         }
         
-        if ($score < 17) {                                       // если очки меньше 17 продолжаем игру
-        (int)$score += (int)$point;
+        if ($score < 17) {
+              
+        $sumofcard++;                                                                   // добавляем 1 к сумме взятых карт
+        $comp_card_arr['sumofcard'] = $sumofcard;                                      // если очки меньше 17 продолжаем игру
+        (int)$score += (int)$point;                                                     // добавляем очки записываем в массив
         $comp_card_arr['score'] = $score;
+        $comp_card_arr['stop'] = false;
+        
         return $comp_card_arr;
-        error_log('Comp continue score  < 17. Score = '.$score);
+        
+        
+        }
+    }
+
+    public function userStop($score = 0, $sumofcard = 0, $card_arr_string = '') { // Функция совершения ходов комптютера и возвращения их массивов
+        $comp_move_check = $this->compMove($score, $sumofcard, $card_arr_string); // делаем ход
+        
+        if ($comp_move_check['stop'] == true) {
+            
+            return $comp_move_check;
+        } else {
+            $score = $comp_move_check['score'];
+            $sumofcard = $comp_move_check['sumofcard'];
+            $card_arr_string = $comp_move_check['cardstring'];
+            return $this->userStop($score, $sumofcard, $card_arr_string);
+            
         }
     }
     public function compareScore() {                              // ФУНКЦИЯ ПОДСЧЕТА ОЧКОВ
-        $arr = json_decode($_POST['finish']);
+        $arr = json_decode($_POST['final']);
         
         $user_score = $arr[0];
         $comp_score = $arr[1];
@@ -158,14 +200,17 @@ $playgame->createColoda();
 if (isset($_POST['getscore'])) { // вызываем ход игрока, затем ход компьютера, возвращаем json-массив со значениями
 
 $user_move = $playgame->userMove();
-$comp_move = $playgame->compMove();
-$move_arr = [$user_move, $comp_move];
+$move_arr = [$user_move];
 echo json_encode($move_arr);
 }
 
 if (isset($_POST['finish'])) { // при нажатии кнопки "стоп" подведением итогов
+$comp_move = $playgame->userStop();
+echo json_encode($comp_move);
+}
+    
+if (isset($_POST['final'])) {
 $playgame->compareScore();
-    }
-
+}
 ?>
 
