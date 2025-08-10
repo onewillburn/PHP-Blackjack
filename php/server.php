@@ -76,10 +76,9 @@ public function userMove() {                                       // ФУНКЦ
     $sumofcard = $scorepost[1]; 
     $sumofcard++;                                                  // добавляем 1 к сумме взятых карт
     $cardstring = '<img src="'.$usercard.'" id="cardimg">';
-    $scorestring = 'Очки: '.$score.'<br>';
+    
     $user_card_arr['score'] = $score;
     $user_card_arr['cardstring'] = $cardstring;
-    $user_card_arr['scorestring'] = $scorestring;
     $user_card_arr['sumofcard'] = $sumofcard; 
     return $user_card_arr;                                         // возвращаем массив значений очки/путьдоизображения/строка с очками
     }
@@ -92,8 +91,8 @@ public function userMove() {                                       // ФУНКЦ
         $comp_card_arr = [];                                           // создаем пустой массив, куда будем класть значения
         
         
-        $cardstring = '<img src="'.$compcard.'" id="rubashka">';
-        $scorestring = 'Очки: '.$score.'<br>';
+        $cardstring = '<img src="'.$compcard.'" id="cardimg">';
+        
         
         $comp_card_arr['score'] = 0;
         
@@ -107,9 +106,7 @@ public function userMove() {                                       // ФУНКЦ
 
             $new_string = $comp_card_arr['cardstring'];
             $comp_card_arr['cardstring'] = $new_string.$cardstring;
-        }
-
-        $comp_card_arr['scorestring'] = $scorestring; 
+        } 
         $comp_card_arr['sumofcard'] = $sumofcard;               // массив по аналогии с предыдущим, но добавлены 2 ячейки. compcard - карта компа
         $comp_card_arr['stop'] = false;                       // данная строка при false - продолжение игры, при true - комп останавилвиается
             

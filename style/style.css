@@ -1,3 +1,20 @@
+#topblock {
+    background-color: black;
+    color: white;
+    font: sans-serif;
+    height:25%;
+}
+#usertop {
+    display: inline-block;
+    width:45%;
+    position: absolute;
+}
+
+#comptop {
+    display: inline-block;
+    margin-left:45%;
+    position: absolute;
+}
 #userplay {
     display:inline-block;
     width: 45%;
@@ -13,9 +30,10 @@
 }
 
 #gameplay {
-    height: 60%;
+    height: 75%;
     overflow-y: auto;
     width: 100%;
+    border: 1px solid black;
 }
 #buttons {
     width:100%;
@@ -27,16 +45,19 @@
 }
 
 #cardimg {
-    width:17%;
-    height:22%;
+    width:30%;
+    height:45%;
 }
 
 #rubashka {
-    width:17%;
-    height:23%;
+    width:13%;
+    height:30%;
+    margin-left:5%;
+    position: absolute;
+    
 }
 #getcardjs {
-    margin-top:10%;
+    margin-top: 7%;
     margin-left:20%;
     border: none;
     border-radius: 10px;
@@ -60,6 +81,7 @@
 }
 
 #finishjs {
+    margin-top: 7%;
     border: none;
     border-radius: 10px;
     text-decoration: none;
@@ -81,6 +103,7 @@
     top: 3px;
 }
 #finaljs {
+    margin-top: 7%;
     border: none;
     border-radius: 10px;
     text-decoration: none;
