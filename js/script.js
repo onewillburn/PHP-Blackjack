@@ -24,17 +24,17 @@ $('#getcardjs').click(() => {
 			
              // стираем предыдушее значение очков юзера, обновляем на новое
 			$('#coloda_sum').text('');
-			$('#coloda_sum').append(answer[0]['coloda_count']);
-            $('#user_card_code').append(answer[0]['cardvalue']); // добавляем коды карт для проверки тузов в конце
+			$('#coloda_sum').append(answer['coloda_count']);
+            $('#user_card_code').append(answer['cardvalue']); // добавляем коды карт для проверки тузов в конце
 			
-			$('#user_card_space').append(answer[0]['cardstring'] + ' '); // вставляем в блок путь к изображению карты
+			$('#user_card_space').append(answer['cardstring'] + ' '); // вставляем в блок путь к изображению карты
 
             $('#user_sumofcard_checker').text('');
-			$('#user_sumofcard_checker').append(answer[0]['sumofcard']); /// добавляем в счетчик количество взятых карт
+			$('#user_sumofcard_checker').append(answer['sumofcard']); /// добавляем в счетчик количество взятых карт
 
 			$('#user_score_space').text('');                             // добавляем юзеру строку с очками
 			$('#user_score_checker').text('');
-			$('#user_score_space').append(answer[0]['score'] + '<br>');
+			$('#user_score_space').append(answer['score'] + '<br>');
 			$('#user_score_checker').append(Number(answer[0]['score']));
 			
 			                                                     
