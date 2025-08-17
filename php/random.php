@@ -8,14 +8,17 @@ public function __construct() {
     public function getCard() {       // получаем рандомную карту из колоды
         
 $this->card_values = unserialize(file_get_contents('colodas/temp_coloda.txt'));
-$this->usercard = $this->card_values[rand(0, (count($this->card_values)))];
+$this->usercard = $this->card_values[rand(0, (count($this->card_values)) - 1 )]; // получаем случайную карту , - 1 потому что count начинается не с 0
+
 $delete_key = array_search($this->usercard, $this->card_values);
 unset($this->card_values[$delete_key]);
+$re_index_card_values = array_values($this->card_values); // переиндексируем массив
 file_put_contents('colodas/temp_coloda.txt', "");
-file_put_contents('colodas/temp_coloda.txt', serialize($this->card_values));
+file_put_contents('colodas/temp_coloda.txt', serialize($re_index_card_values));
 $img = $this->cardIMG($this->usercard);
 $point = $this->getPoint($this->usercard);
 $card = $this->usercard;
+
 $card_arr = [$card, $point, $img];
 return  $card_arr;
 }

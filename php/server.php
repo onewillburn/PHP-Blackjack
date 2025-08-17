@@ -40,7 +40,9 @@ echo json_encode($dealer_move);
     
 if (isset($_POST['final'])) { // при нажатии кнопки раскрыться подведение итогов
 require_once('compare_score.php');
+
 $compare = new compareScore;
+
 $compare->compareScore();
 }
 ?>

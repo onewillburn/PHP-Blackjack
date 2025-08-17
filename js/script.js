@@ -35,7 +35,7 @@ $('#getcardjs').click(() => {
 			$('#user_score_space').text('');                             // добавляем юзеру строку с очками
 			$('#user_score_checker').text('');
 			$('#user_score_space').append(answer['score'] + '<br>');
-			$('#user_score_checker').append(Number(answer[0]['score']));
+			$('#user_score_checker').append(Number(answer['score']));
 			
 			                                                     
 
@@ -118,7 +118,8 @@ $('#finishjs').click(() => {
 			
 			$('#comp_score_checker').text('');
 			$('#comp_score_checker').append(answer['score']); // стираем предыдушее значение очков компа, обновляем на новое
-                                                                    
+            $('#coloda_sum').text('');
+			$('#coloda_sum').append(answer['coloda_count']);                                         
             for (let i = 0; i<=Number(answer['sumofcard']); i++ ) {
             $('#comp_card_space').append('<img src="img/rubashka/rubashka.jpg" id="rubashka" style="z-index:' + i + '; margin-left:' + i*2 + '%; transform: rotate(' + i*2 +'deg);">'); // добавляем карты вверх рубашкой
             }
@@ -154,6 +155,7 @@ $('#finaljs').click(() => {
 					data: { final: JSON.stringify(scorearr)}, // отправляем массив с очками серверу, чтобы он их сравнил
 					success: function(data) { 
 			alert(data);
+			
 			$('#coloda_sum').text(0);
 			$('#user_score_checker').text(''); //  обнуляем все показатели для новой игры
 			$('#user_score_space').text('');

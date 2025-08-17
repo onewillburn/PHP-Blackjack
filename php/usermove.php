@@ -32,6 +32,7 @@ class userMove {
         $user_card_arr['acessum'] = 0;
         $user_card_arr['cardvalue'] = $cardvalue[0];
         $user_card_arr['coloda_count'] = $coloda_count;
+        
         return $user_card_arr;                                         // возвращаем массив значений очки/путьдоизображения/строка с очками
         }
 }

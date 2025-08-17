@@ -5,15 +5,18 @@ class compMove {
 
     public function __construct() {
         require_once('random.php');
-        $random = new random;
-        $card_arr = $random->getCard();
-        $this->card = $card_arr[0];
-        $this->point = $card_arr[1];
-        $this->img = $card_arr[2];
+        $this->random = new random;
+        
+        
+        
+        
     }
      
     public function compMove($score = 0, $sumofcard = 0, $card_arr_string = '') {     // ФУНКЦИЯ ХОДА КОМПЬЮТЕРА 
-        
+        $card_arr = $this->random->getCard();
+        $this->card = $card_arr[0];
+        $this->point = $card_arr[1];
+        $this->img = $card_arr[2];
         $comp_card_name = $this->card;                       // получаем случайную карту
         $compcard = $this->img;                            // получаем изображение карты                
         $point = $this->point;                               // получаем текущие очки
@@ -24,6 +27,8 @@ class compMove {
         $comp_card_arr['score'] = 0;
         $comp_card_arr['score'] += (int)$score;
         $comp_card_arr['cardstring'] = $card_arr_string;
+        
+
         if($comp_card_arr['cardstring'] == '') {
             $comp_card_arr['cardstring'] = $cardstring;
         } else {
@@ -81,17 +86,19 @@ class compMove {
     }
     
 
-    public function userStop($score = 0, $sumofcard = 0, $card_arr_string = '') { // Функция совершения ходов комптютера и возвращения их массивов
+    public function userStop($score = 0, $sumofcard = 0, $card_arr_string = '', $coloda_count = 0) { // Функция совершения ходов комптютера и возвращения их массивов
         
-        $comp_move_check = $this->compMove($score, $sumofcard, $card_arr_string); // делаем ход
+        $comp_move_check = $this->compMove($score, $sumofcard, $card_arr_string, $coloda_count); // делаем ход
         
         if ($comp_move_check['stop'] == true) {
-            
+            $coloda_count = count(unserialize(file_get_contents('colodas/temp_coloda.txt')));
+            $comp_move_check['coloda_count'] = $coloda_count;
             return $comp_move_check;
         } else {
             $score = $comp_move_check['score'];
             $sumofcard = $comp_move_check['sumofcard'];
             $card_arr_string = $comp_move_check['cardstring'];
+            
             return $this->userStop($score, $sumofcard, $card_arr_string);
             
         }
