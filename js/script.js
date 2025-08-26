@@ -1,18 +1,64 @@
+
+
+
 $( document ).ready(function() {
+	$('#gamewindow').hide();
+	$('#clickcheck').hide();
+	$('#startwindow').show();
 	$('#finaljs').hide();
+	$('#windowchecker').hide();
+	$('#usercardcode').hide();
+	$('#windowchecker').text('1');
+	$.ajax({
+		type: 'post',
+		url: 'php/server.php',
+		data: { refresh_coloda: 'check'}, // отпарвляем массив серверу
+		
+})
 })
 
+
 document.addEventListener('keydown', function(event) {
-	if (event.keyCode === 13) {
+	
+	if (event.keyCode === 13 && $('#windowchecker').text() == '0') {
 		$('#getcardjs').click();
 	}
   });
+
+$('#startsendbank').click(() => {
+	startBank();
+})
+
 $('#getcardjs').click(() => {
-    let score_user = Number($('#user_score_checker').text()); //   копируем значение скрытой переменной юзера
+	let clicker = $('#clickcheck').text();
+	
+	if(clicker == '0') {
+		
+		potVal();
+		$('#clickcheck').text('1');
+	} else if (clicker == '1') {
+		getCard();
+	}
+})
+
+
+
+$('#finishjs').click(() => {
+finish();
+})
+
+$('#finaljs').click(() => {
+final();   
+})
+
+function getCard() {
+	let score_user = Number($('#user_score_checker').text()); //   копируем значение скрытой переменной юзера
 	let sumofcard_user = Number($('#user_sumofcard_checker').text()); // количество карт 
 	let coloda_sum = Number($('#coloda_sum').text());
 	let scorearr = [];
 	scorearr.push(score_user, sumofcard_user, coloda_sum); // добавляем их в массив
+	let potval = Number($('#potval').text());
+	
     $.ajax({
 		type: 'post',
 		url: 'php/server.php',
@@ -76,10 +122,9 @@ $('#getcardjs').click(() => {
 			}
 			
 })
-})
+}
 
-
-$('#finishjs').click(() => {
+function finish() {
 	let score_user = Number($('#user_score_checker').text()); //   копируем значение скрытой переменной юзера
 	let sumofcard_user = Number($('#user_sumofcard_checker').text()); // количество карт 
 	let card_code = $('#user_card_code').text();
@@ -137,17 +182,17 @@ $('#finishjs').click(() => {
 
 }
 	})
-})
+}
 
-$('#finaljs').click(() => {
-            let score_user = Number($('#user_score_checker').text());
-			let score_comp = Number($('#comp_score_checker').text()); //   копируем значение скрытой переменной юзера
+function final() {
+	let scoreuser = Number($('#user_score_checker').text());//   копируем значение скрытых переменных с очками
+			let scorecomp = Number($('#comp_score_checker').text()); 
 			let scorearr = [];
 			
             
 			let choice = confirm('Готовы раскрыться?');
 			if (choice) {
-	        scorearr.push(score_user,score_comp);
+	        scorearr.push(scoreuser,scorecomp);
 			
 				$.ajax({
 					type: 'post',
@@ -155,7 +200,19 @@ $('#finaljs').click(() => {
 					data: { final: JSON.stringify(scorearr)}, // отправляем массив с очками серверу, чтобы он их сравнил
 					success: function(data) { 
 			alert(data);
-			
+			let potval = Number($('#potval').val()); // проводим сравнение очков и их распеределение после раунда
+	        let userbank = Number($('#usermoney').text());
+	        let compbank = Number($('#compmoney').text());
+
+			if (data.includes('выиграли')) {
+				$('#usermoney').text(userbank + potval);
+			}  else if (data.includes('Равный')) {
+				$('#usermoney').text(userbank + potval);
+		        $('#compmoney').text(compbank + potval);
+			} else if (data.includes('проиграли')){
+		          $('#compmoney').text(compbank + potval);
+			}
+			$('#clickcheck').text('0'); // вовзращаем кликер в исходное положение для сл.раунда
 			$('#coloda_sum').text(0);
 			$('#user_score_checker').text(''); //  обнуляем все показатели для новой игры
 			$('#user_score_space').text('');
@@ -170,10 +227,55 @@ $('#finaljs').click(() => {
 			$('#finishjs').show(); // открываем кнопки первой части игры: взять карту и стоп / скрываем кнопку раскрыться
 			$('#getcardjs').show();
 			$('#finaljs').hide();
+			let round = $('#round').text(); // добавляем прошедший раунд
+			$('#round').text(Number(round) + 1);
 		    }
 		})
 	}
-})
+}
 
+function startBank() {
+	let banksum = $("#bankinput").val();
+	if (banksum == '') {
+		alert('Банк не может быть пустым');
+	} else if (banksum.length > 12) {
+		alert('Банк не может быть больше двенадцатизначного числа');
+		$("#bankinput").val('');
+	} else if (!typeof(banksum) == Number) {
+		alert('Можно вводить только цифры!');
+		$("#bankinput").val('');
+	}
 	
+	else {
+		$('#usermoney').text(Number(banksum));
+		$('#compmoney').text(Number(banksum));
+		alert('Приятной игры');
+		$('#startwindow').hide();
+		$('#gamewindow').show();
+	    
+	}
+}
 
+
+
+function potVal() {
+	let potval = Number($('#potval').val());
+	let userbank = Number($('#usermoney').text());
+	let compbank = Number($('#compmoney').text());
+	if (potval == '' | potval == 0) {
+		alert('Ставка не может быть равну нулю');
+		$('#potval').val('');
+	} else if (!typeof(potval) == Number) {
+		alert('Ставка может быть только из цифр');
+		$('#potval').val('');
+	} else if (potval > userbank | potval > compbank) {
+		alert('Ставка не может быть больше банка игрока или дилера');
+		$('#potval').val('');
+	} else {
+		getCard();
+		$('#usermoney').text(userbank - potval);
+		$('#compmoney').text(compbank - potval);
+	    let potvalcheck = false;
+		return potvalcheck;
+	}
+}

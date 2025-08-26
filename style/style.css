@@ -1,3 +1,27 @@
+body {
+    font-family: "Roboto", sans-serif;
+    font-weight: 213;
+}
+
+#startblock {
+    border: 2px solid black;
+    width: 30%;
+    height:20%;
+    margin-left: 33%;
+    margin-top: 20%;
+}
+
+#bankinput {
+    display: inline-block;
+    width:45%;
+    margin-left: 17%;
+    border: 2px rgb(88, 88, 88) solid;
+}
+#startbanktext {
+    font-size: 200%;
+    margin-left:17%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
 #topblock {
     background-color: black;
     color: white;
@@ -29,7 +53,7 @@
     
 }
 
-#gameplay {
+#gameplay_stats {
     height: 75%;
     overflow-y: auto;
     width: 100%;
@@ -57,7 +81,7 @@
     
 }
 #getcardjs {
-    margin-top: 7%;
+    margin-top: 1%;
     margin-left:20%;
     border: none;
     border-radius: 10px;
@@ -81,7 +105,7 @@
 }
 
 #finishjs {
-    margin-top: 7%;
+    margin-top: 1%;
     border: none;
     border-radius: 10px;
     text-decoration: none;
@@ -103,7 +127,7 @@
     top: 3px;
 }
 #finaljs {
-    margin-top: 7%;
+    margin-top: 1%;
     border: none;
     border-radius: 10px;
     text-decoration: none;
@@ -124,4 +148,36 @@
     box-shadow: none;
     position: relative;
     top: 3px;
+}
+
+#moneyblock {
+    margin-left: 5%;
+    display: inline-block;
+}
+#usermoney, #compmoney, #fraction {
+    display: inline;
+    font-weight: bold;
+}
+#potblock {
+    display: inline-block;
+    margin-left: 10%;
+}
+#pottext {
+    display: inline-block;
+    font-weight: bold;
+}
+#potval {
+    width: 30%;
+    display: inline-block;
+    border: 1px solid black;
+}
+
+#roundblock {
+    display: inline-block;
+    margin-left: 10%;
+}
+
+#round {
+    font-weight: bold;
+    display: inline-block;
 }
