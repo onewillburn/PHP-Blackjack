@@ -5,10 +5,11 @@ $( document ).ready(function() {
 	$('#gamewindow').hide();
 	$('#clickcheck').hide();
 	$('#startwindow').show();
+	$('#end_game').hide();
 	$('#finaljs').hide();
 	$('#windowchecker').hide();
 	$('#usercardcode').hide();
-	$('#windowchecker').text('1');
+	$('#windowchecker').text('1'); // нужен для того, чтобы кнопкой ентер не брать карты
 	$.ajax({
 		type: 'post',
 		url: 'php/server.php',
@@ -20,7 +21,7 @@ $( document ).ready(function() {
 
 document.addEventListener('keydown', function(event) {
 	
-	if (event.keyCode === 13 && $('#windowchecker').text() == '0') {
+	if (event.keyCode === 13 && $('#windowchecker').text() == '0') { // чекер = 0, карты можно брать ентером
 		$('#getcardjs').click();
 	}
   });
@@ -30,12 +31,13 @@ $('#startsendbank').click(() => {
 })
 
 $('#getcardjs').click(() => {
+	
 	let clicker = $('#clickcheck').text();
 	
 	if(clicker == '0') {
 		
 		potVal();
-		$('#clickcheck').text('1');
+		
 	} else if (clicker == '1') {
 		getCard();
 	}
@@ -49,6 +51,7 @@ finish();
 
 $('#finaljs').click(() => {
 final();   
+
 })
 
 function getCard() {
@@ -205,12 +208,12 @@ function final() {
 	        let compbank = Number($('#compmoney').text());
 
 			if (data.includes('выиграли')) {
-				$('#usermoney').text(userbank + potval);
+				$('#usermoney').text(userbank + potval + potval);
 			}  else if (data.includes('Равный')) {
 				$('#usermoney').text(userbank + potval);
 		        $('#compmoney').text(compbank + potval);
 			} else if (data.includes('проиграли')){
-		          $('#compmoney').text(compbank + potval);
+		          $('#compmoney').text(compbank + potval + potval);
 			}
 			$('#clickcheck').text('0'); // вовзращаем кликер в исходное положение для сл.раунда
 			$('#coloda_sum').text(0);
@@ -229,6 +232,7 @@ function final() {
 			$('#finaljs').hide();
 			let round = $('#round').text(); // добавляем прошедший раунд
 			$('#round').text(Number(round) + 1);
+
 		    }
 		})
 	}
@@ -262,6 +266,8 @@ function potVal() {
 	let potval = Number($('#potval').val());
 	let userbank = Number($('#usermoney').text());
 	let compbank = Number($('#compmoney').text());
+	winCheck(); // проверка на начало новой игры
+	if(userbank !== 0 && compbank !== 0) {
 	if (potval == '' | potval == 0) {
 		alert('Ставка не может быть равну нулю');
 		$('#potval').val('');
@@ -275,7 +281,42 @@ function potVal() {
 		getCard();
 		$('#usermoney').text(userbank - potval);
 		$('#compmoney').text(compbank - potval);
+		$('#clickcheck').text('1'); // меняем положение кликера на 1, чтобы вызывать только getCard
 	    let potvalcheck = false;
 		return potvalcheck;
 	}
+}
+}
+
+function winCheck() {
+	let userbank = Number($('#usermoney').text());
+	let compbank = Number($('#compmoney').text());
+	if(userbank == 0) {
+		$('#gamewindow').hide();
+	$('#clickcheck').hide();
+	$('#startwindow').hide();
+	$('#end_game').show(); // окно геймовера
+	$('#you_win').hide(); // скрываем надпись о выигрыше
+	$('#finaljs').hide();
+	$('#windowchecker').hide();
+	$('#usercardcode').hide();
+	$('#windowchecker').text('1'); // нужен для того, чтобы кнопкой ентер не брать карты
+	$('#new_game_btn').click(() => {
+		location.reload();
+		})
+		}
+		if(compbank == 0) {
+			$('#gamewindow').hide();
+			$('#clickcheck').hide();
+			$('#startwindow').hide();
+			$('#end_game').show(); // окно геймовера
+			$('#you_lose').hide(); // скрываем надпись о проигрыше
+			$('#finaljs').hide();
+			$('#windowchecker').hide();
+			$('#usercardcode').hide();
+			$('#windowchecker').text('1'); // нужен для того, чтобы кнопкой ентер не брать карты
+			$('#new_game_btn').click(() => {
+				location.reload();
+				})
+		}
 }
