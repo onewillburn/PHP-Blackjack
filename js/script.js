@@ -9,6 +9,7 @@ $( document ).ready(function() {
 	$('#finaljs').hide();
 	$('#windowchecker').hide();
 	$('#usercardcode').hide();
+	$('#finishjs').hide();
 	$('#windowchecker').text('1'); // нужен для того, чтобы кнопкой ентер не брать карты
 	$.ajax({
 		type: 'post',
@@ -46,7 +47,9 @@ $('#getcardjs').click(() => {
 
 
 $('#finishjs').click(() => {
+
 finish();
+
 })
 
 $('#finaljs').click(() => {
@@ -61,7 +64,10 @@ function getCard() {
 	let scorearr = [];
 	scorearr.push(score_user, sumofcard_user, coloda_sum); // добавляем их в массив
 	let potval = Number($('#potval').text());
-	
+	if($('#finish_checker').text('0')) {
+		$('#finish_checker').text('1');
+		$('#finishjs').show();
+	}
     $.ajax({
 		type: 'post',
 		url: 'php/server.php',
